@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ConsoleCalc;
+using ConsoleCalc.work;
 
 namespace UnitTestConsoleCalc
 {
@@ -8,7 +8,7 @@ namespace UnitTestConsoleCalc
     public class UnitTestHelper
     {
         [TestMethod]
-        public void ConvertToReversePolishNotationTest()
+        public void ConvertToReversePolishNotation()
         {
             var calc = new CalcString();
             calc.Operators.Add(new Operator('^', 3));
@@ -33,6 +33,40 @@ namespace UnitTestConsoleCalc
             {
                 Assert.AreEqual(result[i], answer[i]);
             }
+
+            result = calc.ConvertToReversePolishNotation("2,5+4.7*25/(981-0.5)^2");
+            answer = new string[] { "2,5", "4.7", "25", "*", "981", "0.5", "-", "2", "^", "/", "+" };
+            for (int i = 0; i < answer.Length; i++)
+            {
+                Assert.AreEqual(result[i], answer[i]);
+            }
+
+            //Проверка работы исключений на скобки
+            try
+            {
+                calc.ConvertToReversePolishNotation("(");
+                calc.ConvertToReversePolishNotation(")");
+                calc.ConvertToReversePolishNotation("())");
+                calc.ConvertToReversePolishNotation("(()");
+                calc.ConvertToReversePolishNotation("3^2+6/2*(5+5))");
+                calc.ConvertToReversePolishNotation("3^2+6/2*((5+5)");
+                Assert.Fail(); //Если дошли до этой линии, то исключений не было. Тест провален.
+            }
+            catch (AssertFailedException e) { throw e; }
+            catch { }
+
+            //Проверка работы исключений на неизвестный оператор
+            try
+            {
+                calc.ConvertToReversePolishNotation("3^2%6/2*(5+5)");
+                calc.ConvertToReversePolishNotation("3\\2+6/2*(5+5)");
+                Assert.Fail(); //Если дошли до этой линии, то исключений не было. Тест провален.
+            }
+            catch (AssertFailedException e) { throw e; }
+            catch { }
+
+
+
         }
 
     }

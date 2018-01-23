@@ -8,10 +8,10 @@ namespace UnitTestConsoleCalc
     public class UnitTestHelper
     {
         [TestMethod]
-        public void ConvertToReversePolishNotation()
+        public void ConvertToReversePolishNotationTest()
         {
             var calc = new CalcString();
-            calc.Operators.Add(new Operator('^', 3));
+            calc.Operators.Add(new Operator('^', (a) => Math.Pow(a[0], a[1]), 2,3));
 
             var result = calc.ConvertToReversePolishNotation("1+1-2");
             var answer = new string[] { "1", "1", "+", "2", "-" };
@@ -34,8 +34,8 @@ namespace UnitTestConsoleCalc
                 Assert.AreEqual(result[i], answer[i]);
             }
 
-            result = calc.ConvertToReversePolishNotation("2,5+4.7*25/(981-0.5)^2");
-            answer = new string[] { "2,5", "4.7", "25", "*", "981", "0.5", "-", "2", "^", "/", "+" };
+            result = calc.ConvertToReversePolishNotation("2.5+4,7*25/(981-0.5)^2");
+            answer = new string[] { "2,5", "4,7", "25", "*", "981", "0,5", "-", "2", "^", "/", "+" };
             for (int i = 0; i < answer.Length; i++)
             {
                 Assert.AreEqual(result[i], answer[i]);
@@ -69,5 +69,21 @@ namespace UnitTestConsoleCalc
 
         }
 
+        [TestMethod]
+        public void CalculateTest()
+        {
+            var calc = new CalcString();
+            calc.Operators.Add(new Operator('^', (a) => Math.Pow(a[0], a[1]), 2, 3));
+
+            Assert.AreEqual(5, calc.Calculate("3+2"));
+            Assert.AreEqual(1, calc.Calculate("3-2"));
+            Assert.AreEqual(6, calc.Calculate("3*2"));
+            Assert.AreEqual(1.5, calc.Calculate("3/2"));
+            Assert.AreEqual(9, calc.Calculate("3^2"));
+
+            Assert.AreEqual(6, calc.Calculate("2+2*2"));
+            Assert.AreEqual(2.5, calc.Calculate("2+4*2/(1-5)^2"));
+            
+        }
     }
 }

@@ -18,11 +18,22 @@ namespace ConsoleCalc.work
     {
         public char Symbol { get; private set; }
         public byte Priority { get; private set; }
+        public byte CountOfOperands { get; private set; }
+        public delegate double Action(double[] operands);
+        private Action ActionDo;
 
-        public Operator(char symbol, byte priority = 0)
+        public Operator(char symbol, Action action, byte countOfOperands = 2, byte priority = 0)
         {
             this.Symbol = symbol;
             this.Priority = priority;
+            this.CountOfOperands = countOfOperands;
+            this.ActionDo = action;
+            
+        }
+
+        public double Evaluation (double[] operands)
+        {
+            return ActionDo(operands);
         }
 
         public override bool Equals(object obj)

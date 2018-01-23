@@ -17,12 +17,20 @@ namespace ConsoleCalc.work
         /// <param name="input">Конвертируемая строка.</param>
         /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
         string[] ConvertToArray(string input);
+
         /// <summary>
         /// Конвертирует в список.
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
         /// <returns>Список объектов, где объект или IOperator или строка.</returns>
         List<object> ConvertToList(string input);
+
+        /// <summary>
+        /// Конвертирует в стек.
+        /// </summary>
+        /// <param name="input">Конвертируемая строка.</param>
+        /// <returns>Стек объектов, где объект или IOperator или строка.</returns>
+        Stack<object> ConvertToStack(string input);
     }
 
     
@@ -40,6 +48,7 @@ namespace ConsoleCalc.work
         {
             this.Operators = operators;
         }
+
         /// <summary>
         /// Конвертирует в массив. 
         /// </summary>
@@ -66,6 +75,32 @@ namespace ConsoleCalc.work
 
             return result.ToArray();
         }
+
+        /// <summary>
+        /// Конвертирует в стек.
+        /// </summary>
+        /// <param name="input">Конвертируемая строка.</param>
+        /// <returns>Стек объектов, где объект или IOperator или строка.</returns>
+        public Stack<object> ConvertToStack(string input)
+        {
+            var result = new Stack<object>();
+            try
+            {
+                var tmp = ConvertToList(input);
+                for (int i = tmp.Count - 1; i >= 0; i--)//Инвертируем порядок
+                {
+                    result.Push(tmp[i]);
+                }
+               
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Конвертирует в список.
         /// </summary>
@@ -129,7 +164,8 @@ namespace ConsoleCalc.work
                     while ((i < input.Length - 1) && (Char.IsDigit(input[i+1]) || (input[i+1] ==',') || (input[i+1] =='.')))
                     {
                         i++;
-                        s += input[i];                       
+                        if (input[i] == '.') s += ','; //заменяем точку запятой
+                        else s += input[i];                       
                     }
                     resultStack.Add(s);
                 }
@@ -148,6 +184,7 @@ namespace ConsoleCalc.work
             }
             return resultStack;
         }
+
         /// <summary>
         /// Проверяет строку на равенсто открывающих и закрывающих скобок.
         /// </summary>
@@ -165,6 +202,7 @@ namespace ConsoleCalc.work
             return left == right;
 
         }
+
         /// <summary>
         /// Находит в списке операторов оператор по символу.
         /// </summary>

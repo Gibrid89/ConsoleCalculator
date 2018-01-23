@@ -6,9 +6,22 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalc.work
 {
+    /// <summary>
+    /// Rонвертациz в обратную Польскую нотацию.
+    /// </summary>
     internal interface IPolishNotationConvertor
     {
+        /// <summary>
+        /// Конвертирует в массив. 
+        /// </summary>
+        /// <param name="input">Конвертируемая строка.</param>
+        /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
         string[] ConvertToArray(string input);
+        /// <summary>
+        /// Конвертирует в список.
+        /// </summary>
+        /// <param name="input">Конвертируемая строка.</param>
+        /// <returns>Список объектов, где объект или IOperator или строка.</returns>
         List<object> ConvertToList(string input);
     }
 
@@ -19,6 +32,10 @@ namespace ConsoleCalc.work
     internal class PolishNotationConvertor : IPolishNotationConvertor
     {
         private List<IOperator> Operators;
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="operators">Список операторов.</param>
         public PolishNotationConvertor (List<IOperator> operators)
         {
             this.Operators = operators;
@@ -49,7 +66,6 @@ namespace ConsoleCalc.work
 
             return result.ToArray();
         }
-
         /// <summary>
         /// Конвертирует в список.
         /// </summary>

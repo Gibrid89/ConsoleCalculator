@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ConsoleCalc.work
 {
     /// <summary>
-    /// Rонвертациz в обратную Польскую нотацию.
+    /// Конвертация в обратную Польскую нотацию.
     /// </summary>
     internal interface IPolishNotationConvertor
     {
@@ -54,6 +54,7 @@ namespace ConsoleCalc.work
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
         /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
+        /// <remarks>Вызывает ConvertToList(), и конвертирует список в массив.</remarks>
         public string[] ConvertToArray(string input) 
         {
             var result = new List<string>();
@@ -68,9 +69,9 @@ namespace ConsoleCalc.work
                         result.Add(el as string);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw;
             }
 
             return result.ToArray();
@@ -81,6 +82,7 @@ namespace ConsoleCalc.work
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
         /// <returns>Стек объектов, где объект или IOperator или строка.</returns>
+        /// <remarks>Вызывает ConvertToList(), и конвертирует список в стек.</remarks>
         public Stack<object> ConvertToStack(string input)
         {
             var result = new Stack<object>();
@@ -93,9 +95,9 @@ namespace ConsoleCalc.work
                 }
                
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw;
             }
 
             return result;

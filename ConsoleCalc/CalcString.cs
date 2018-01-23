@@ -6,14 +6,22 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalc.work
 {
+    /// <summary>
+    /// Класс для вычесления строки с математическими выражениями.
+    /// </summary>
     public class CalcString
     {
+        /// <summary>
+        /// Список используемых операторов.
+        /// </summary>
         public List<IOperator> Operators { get; set; }
         private IPolishNotationConvertor Convertor;
 
+        /// <summary>
+        /// Конструктор. Создает по умолчанию операторы: '*', '/', '+', '-', '(', ')'.
+        /// </summary>
         public CalcString()
         {
-            /*Func<double, double, double> twoParams = (x, y) => x * y;*/
             Operators = new List<IOperator>();
             Operators.Add(new Operator('*', (a) => a[0] * a[1], 2, 2));
             Operators.Add(new Operator('/', (a) => a[0] / a[1], 2, 2));
@@ -23,7 +31,12 @@ namespace ConsoleCalc.work
             Operators.Add(new Operator(')', null, 2, 0));
             Convertor = new PolishNotationConvertor(Operators);
         }
-        
+
+        /// <summary>
+        /// Вычисляет результат из строки.
+        /// </summary>
+        /// <param name="input">Строка с выражениями</param>
+        /// <returns>Результат вычислений</returns>
         public double Calculate(string input)
         {
             var polishString = Convertor.ConvertToStack(input);
@@ -50,15 +63,20 @@ namespace ConsoleCalc.work
 
         }
 
+        /// <summary>
+        /// Вызывает метод конвертации в обратную польскую запись из встроенного класса.
+        /// </summary>
+        /// <param name="input">Конвертируемая строка</param>
+        /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
         public string[] ConvertToReversePolishNotation(string input)
         {
             try
             {
                 return Convertor.ConvertToArray(input);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }           
         }
 

@@ -52,7 +52,7 @@ namespace UnitTestConsoleCalc
                 calc.ConvertToReversePolishNotation("3^2+6/2*((5+5)");
                 Assert.Fail(); //Если дошли до этой линии, то исключений не было. Тест провален.
             }
-            catch (AssertFailedException e) { throw e; }
+            catch (AssertFailedException) { throw; }
             catch { }
 
             //Проверка работы исключений на неизвестный оператор
@@ -62,7 +62,7 @@ namespace UnitTestConsoleCalc
                 calc.ConvertToReversePolishNotation("3\\2+6/2*(5+5)");
                 Assert.Fail(); //Если дошли до этой линии, то исключений не было. Тест провален.
             }
-            catch (AssertFailedException e) { throw e; }
+            catch (AssertFailedException) { throw; }
             catch { }
 
 

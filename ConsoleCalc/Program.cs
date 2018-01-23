@@ -5,6 +5,11 @@ using ConsoleCalc.work;
 
 namespace ConsoleCalc
 {
+    /// <summary>
+    /// Задание - написать консольный калькулятор, который принимает входную строку, содержащую математическое выражение
+    /// (+,-,*,/,скобки) и выводит в консоль его результат. Главный критерий при оценке задания - разработка с использованием
+    /// принципов SOLID, TDD. Решение должно быть расширяемым другими операцими.
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
@@ -12,15 +17,7 @@ namespace ConsoleCalc
             var calc = new CalcString();
             calc.Operators.Add(new Operator('^', (a) => Math.Pow(a[0], a[1]), 2, 3));//Пример добавления нового оператора
 
-            /*var result = calc.ConvertToReversePolishNotation("2,5+4,7*25/(981-0.5)^2");
-            var answer = new string[] { "2,5", "4,7", "25", "*", "981", "0.5", "-", "2", "^", "/", "+" };
-            for (int i = 0; i < answer.Length; i++)
-            {
-                Console.WriteLine("result = " + result[i] + "; answer = " + answer[i]);
-            }*/
-
             Console.WriteLine("Введите строку для расчета. Для выхода введите \"exit\"");
-
             Console.Write(">");
             string s = Console.ReadLine();
             while (s.ToLower() != "exit")

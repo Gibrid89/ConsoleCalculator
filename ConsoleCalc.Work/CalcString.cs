@@ -82,6 +82,9 @@ namespace ConsoleCalc.Work
                     resultStack.Push(Convert.ToDouble(el.ToString()));
                 }
             }
+
+            if (resultStack.Count < 1 )
+                throw new Exception("Ошибка в выражении. Нет ответа.");
             return resultStack.Pop();
 
         }

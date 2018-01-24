@@ -54,14 +54,14 @@ namespace ConsoleCalc.Work
             if (!CheckParentheses(input))
                 throw new FormatException("Неверно расствленны скобки.");
 
+            var inp = input.Replace(" ", "");//Удаляем все пробелы.
+
             var resultQuery = new Queue<object>();
             var bufStack = new Stack<IOperator>();        
 
-            for (int i = 0; i < input.Length; i++)
+            for (int i = 0; i < inp.Length; i++)
             {
-                if (input[i] == ' ') //Пропускаем пробелы
-                    continue;
-                var opr = FindOperator(input[i], operators);//найденный оператор
+                var opr = FindOperator(inp[i], operators);//найденный оператор
                 if (opr != null) //Если оператор
                 {
                     if ((bufStack.Count <= 0) || (opr.Symbol == '('))
@@ -100,20 +100,20 @@ namespace ConsoleCalc.Work
                         bufStack.Push(opr);
                     }                  
                 }
-                else if (Char.IsDigit(input[i]))//если цифра, то добавляем в строку, пока не вышли за границы и след. символ часть числа
+                else if (Char.IsDigit(inp[i]))//если цифра, то добавляем в строку, пока не вышли за границы и след. символ часть числа
                 {
-                    string s = "" + input[i];
-                    while ((i < input.Length - 1) && (Char.IsDigit(input[i+1]) || (input[i+1] ==',') || (input[i+1] =='.')))
+                    string s = "" + inp[i];
+                    while ((i < inp.Length - 1) && (Char.IsDigit(inp[i+1]) || (inp[i+1] ==',') || (inp[i+1] =='.')))
                     {
                         i++;
-                        if (input[i] == '.') s += ','; //заменяем точку запятой
-                        else s += input[i];                       
+                        if (inp[i] == '.') s += ','; //заменяем точку запятой
+                        else s += inp[i];                       
                     }
                     resultQuery.Enqueue(s);
                 }
                 else
                 {
-                    throw new FormatException("Неизвестный оператор \"" + input[i] + "\"");
+                    throw new FormatException("Неизвестный оператор \"" + inp[i] + "\"");
                 }
             }
 

@@ -4,35 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleCalc.work
+namespace ConsoleCalc.Work
 {
     /// <summary>
-    /// Интерфейс для оператора
+    /// Класс математической операции.
     /// </summary>
-    public interface IOperator
-    {
-        /// <summary>
-        /// Представление в виде символа.
-        /// </summary>
-        char Symbol { get; }
-
-        /// <summary>
-        /// Приоритет операции.
-        /// </summary>
-        byte Priority { get; }
-
-        /// <summary>
-        /// Количество используемых операндов для вычисления.
-        /// </summary>
-        byte CountOfOperands { get; }
-
-        /// <summary>
-        /// Конвертирует в строку.
-        /// </summary>
-        /// <returns></returns>
-        string ToString();
-    }
-
     public class Operator : IOperator
     {
         /// <summary>
@@ -43,7 +19,7 @@ namespace ConsoleCalc.work
         /// <summary>
         /// Приоритет операции.
         /// </summary>
-        public byte Priority { get; private set; }
+        public Priority Priority { get; private set; }
 
         /// <summary>
         /// Количество используемых операндов для вычисления.
@@ -65,7 +41,7 @@ namespace ConsoleCalc.work
         /// <param name="action">Действие оператора.</param>
         /// <param name="countOfOperands">Количество используемых операндов.</param>
         /// <param name="priority">Приоритет оператора.</param>
-        public Operator(char symbol, Action action, byte countOfOperands = 2, byte priority = 0)
+        public Operator(char symbol, Action action, byte countOfOperands = 2, Priority priority = Priority.Low)
         {
             this.Symbol = symbol;
             this.Priority = priority;
@@ -89,7 +65,7 @@ namespace ConsoleCalc.work
             }
             catch
             {
-                throw new Exception("Ошибка в делегате операнда.");
+                throw new Exception("Ошибка в делегате оператора.");
             }
             
         }

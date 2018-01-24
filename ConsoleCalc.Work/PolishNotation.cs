@@ -4,58 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleCalc.work
+namespace ConsoleCalc.Work
 {
     /// <summary>
-    /// Конвертация в обратную Польскую нотацию.
+    /// Класс конвертации в обратную польскую нотацию.
     /// </summary>
-    internal interface IPolishNotationConvertor
+    /// <remarks>Реализует алгоритм «сортировочная станция» Эдсгера Дейкстра</remarks>
+    public class PolishNotationConvertor : IPolishNotationConvertor
     {
         /// <summary>
         /// Конвертирует в массив. 
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
-        /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
-        string[] ConvertToArray(string input);
-
-        /// <summary>
-        /// Конвертирует в стек.
-        /// </summary>
-        /// <param name="input">Конвертируемая строка.</param>
-        /// <returns>Стек объектов, где объект или IOperator или строка.</returns>
-        Queue<object> ConvertToQuery(string input);
-    }
-
-    
-    /// <summary>
-    /// Класс конвертации в обратную Польскую нотацию.
-    /// </summary>
-    internal class PolishNotationConvertor : IPolishNotationConvertor
-    {
-        private List<IOperator> Operators;
-        /// <summary>
-        /// Конструктор.
-        /// </summary>
-        /// <param name="operators">Список операторов.</param>
-        public PolishNotationConvertor (List<IOperator> operators)
-        {
-            this.Operators = operators;
-        }
-
-        /// <summary>
-        /// Конвертирует в массив. 
-        /// </summary>
-        /// <param name="input">Конвертируемая строка.</param>
+        /// <param name="operators">Список используемых операторов.</param>
         /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
         /// <remarks>Вызывает ConvertToQuery(), и конвертирует очередь в массив.</remarks>
-        public string[] ConvertToArray(string input) 
+        public string[] ConvertToArray(string input, List<IOperator> operators) 
         {
             var result = new List<string>();
             try
             {
-                foreach (var el in ConvertToQuery(input))
+                foreach (var el in ConvertToQuery(input, operators))
                 {
-                    if (el is Operator tmp)
+                    if (el is IOperator tmp)
                         result.Add(tmp.Symbol.ToString());
                     else
                         result.Add(el as string);
@@ -72,19 +43,25 @@ namespace ConsoleCalc.work
         /// Конвертирует в очередь.
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
+        /// <param name="operators">Список используемых операторов.</param>
         /// <returns>Очередь объектов, где объект или IOperator или строка.</returns>
-        public Queue<object> ConvertToQuery(string input)
+        public Queue<object> ConvertToQuery(string input, List<IOperator> operators)
         {
+            if (string.IsNullOrWhiteSpace(input))
+                throw new ArgumentException("Строка не должна быть пустой.");
+            if (operators == null || operators.Count < 1)
+                throw new ArgumentException("Должен быть хотя бы 1 оператор.");
             if (!CheckParentheses(input))
-            {
                 throw new FormatException("Неверно расствленны скобки.");
-            }
+
             var resultQuery = new Queue<object>();
             var bufStack = new Stack<IOperator>();        
 
             for (int i = 0; i < input.Length; i++)
             {
-                var opr = FindOperator(input[i]);//найденный оператор
+                if (input[i] == ' ') //Пропускаем пробелы
+                    continue;
+                var opr = FindOperator(input[i], operators);//найденный оператор
                 if (opr != null) //Если оператор
                 {
                     if ((bufStack.Count <= 0) || (opr.Symbol == '('))
@@ -136,7 +113,7 @@ namespace ConsoleCalc.work
                 }
                 else
                 {
-                    throw new FormatException("Неизвестный оператор.");
+                    throw new FormatException("Неизвестный оператор \"" + input[i] + "\"");
                 }
             }
 
@@ -151,7 +128,7 @@ namespace ConsoleCalc.work
         }
 
         /// <summary>
-        /// Проверяет строку на равенсто открывающих и закрывающих скобок.
+        /// Проверяет строку на равенство открывающих и закрывающих скобок.
         /// </summary>
         /// <param name="input">Проверяемая строка.</param>
         /// <returns>Истина, если количество правых и левых скобок равно.</returns>
@@ -174,9 +151,9 @@ namespace ConsoleCalc.work
         /// <param name="c">Искомый символ оператора.</param>
         /// <param name="operators">Список операторов.</param>
         /// <returns></returns>
-        private IOperator FindOperator(char c)
+        private IOperator FindOperator(char c, List<IOperator> operators)
         {
-            foreach (var el in Operators)
+            foreach (var el in operators)
             {
                 if (el.Symbol == c) return el;
             }

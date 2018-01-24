@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using ConsoleCalc.work;
+using ConsoleCalc.Work;
 
 namespace ConsoleCalc
 {
@@ -14,23 +14,24 @@ namespace ConsoleCalc
     {
         static void Main(string[] args)
         {
-            var calc = new CalcString();
-            calc.Operators.Add(new Operator('^', (a) => Math.Pow(a[0], a[1]), 2, 3));//Пример добавления нового оператора
+            var calc = new CalcString(new PolishNotationConvertor());
+            calc.Operators.Add(new Operator('^', (a) => Math.Pow(a[0], a[1]), 2, Priority.Highest));//Пример добавления нового оператора
+            calc.Operators.Add(new Operator('%', (a) => a[0] % a[1],          2, Priority.Highest));
+            calc.Operators.Add(new Operator('s', (a) => Math.Sqrt(a[0]),      1, Priority.Highest));//Добавление унарного оператора
 
-            Console.WriteLine("Введите строку для расчета. Для выхода введите \"exit\"");
-            Console.Write(">");
+            Console.Write("Введите строку для расчета. Для выхода введите \"exit\".\n> ");
             string s = Console.ReadLine();
             while (s.ToLower() != "exit")
             {
                 try
                 {
-                    Console.WriteLine("=" + calc.Calculate(s));
+                    Console.WriteLine("> " + calc.Calculate(s));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Ошибка:" + ex.Message);
+                    Console.WriteLine("Ошибка: " + ex.Message);
                 }
-                Console.Write(">");
+                Console.Write("> ");
                 s = Console.ReadLine();
             }
         }

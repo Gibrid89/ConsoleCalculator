@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{542A722A-489C-480A-9B3B-45B6AF4D548A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ConsoleCalc</RootNamespace>
-    <AssemblyName>ConsoleCalc</AssemblyName>
+    <ProjectGuid>{900DE3F4-B378-453E-B6DF-AF1E5DA3C9B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ConsoleCalc.Work</RootNamespace>
+    <AssemblyName>ConsoleCalc.Work</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -20,10 +20,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\ConsoleCalc.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\ConsoleCalc.Work.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,17 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="CalcString.cs" />
+    <Compile Include="Abstractions\IOperator.cs" />
+    <Compile Include="Abstractions\IPolishNotationConvertor.cs" />
+    <Compile Include="Operator.cs" />
+    <Compile Include="PolishNotation.cs" />
+    <Compile Include="Priority.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ConsoleCalc.Work\ConsoleCalc.Work.csproj">
-      <Project>{900de3f4-b378-453e-b6df-af1e5da3c9b8}</Project>
-      <Name>ConsoleCalc.Work</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -48,16 +48,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ConvertToReversePolishNotationTest.cs" />
+    <Compile Include="CalcStringTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleCalc\ConsoleCalc.csproj">
-      <Project>{542a722a-489c-480a-9b3b-45b6af4d548a}</Project>
-      <Name>ConsoleCalc</Name>
+    <ProjectReference Include="..\ConsoleCalc.Work\ConsoleCalc.Work.csproj">
+      <Project>{900de3f4-b378-453e-b6df-af1e5da3c9b8}</Project>
+      <Name>ConsoleCalc.Work</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

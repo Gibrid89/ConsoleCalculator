@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleCalc.work
+namespace ConsoleCalc.Work
 {
     /// <summary>
-    /// Класс для вычесления строки с математическими выражениями.
+    /// Класс для вычисления строки с математическими выражениями.
     /// </summary>
     public class CalcString
     {
@@ -20,16 +20,33 @@ namespace ConsoleCalc.work
         /// <summary>
         /// Конструктор. Создает по умолчанию операторы: '*', '/', '+', '-', '(', ')'.
         /// </summary>
-        public CalcString()
+        public CalcString(IPolishNotationConvertor convertor, List<IOperator> operators = null)
         {
-            Operators = new List<IOperator>();
-            Operators.Add(new Operator('*', (a) => a[0] * a[1], 2, 2));
-            Operators.Add(new Operator('/', (a) => a[0] / a[1], 2, 2));
-            Operators.Add(new Operator('+', (a) => a[0] + a[1], 2, 1));
-            Operators.Add(new Operator('-', (a) => a[0] - a[1], 2, 1));
-            Operators.Add(new Operator('(', null, 2, 0));
-            Operators.Add(new Operator(')', null, 2, 0));
-            Convertor = new PolishNotationConvertor(Operators);
+            if (convertor != null)
+            {
+                this.Convertor = convertor;
+            }
+            else
+            {
+                throw new ArgumentNullException("convertor");
+            }
+            
+            if (operators != null)
+            {
+                this.Operators = operators;
+            }
+            else
+            {
+                Operators = new List<IOperator>
+                {
+                    new Operator('*', (a) => a[0] * a[1], 2, Priority.High),
+                    new Operator('/', (a) => a[0] / a[1], 2, Priority.High),
+                    new Operator('+', (a) => a[0] + a[1], 2, Priority.Middle),
+                    new Operator('-', (a) => a[0] - a[1], 2, Priority.Middle),
+                    new Operator('(', null,               2, Priority.Low),
+                    new Operator(')', null,               2, Priority.Low)
+                };
+            }
         }
 
         /// <summary>
@@ -39,19 +56,26 @@ namespace ConsoleCalc.work
         /// <returns>Результат вычислений</returns>
         public double Calculate(string input)
         {
-            var polishString = Convertor.ConvertToQuery(input);
+            if (String.IsNullOrWhiteSpace(input))
+                throw new ArgumentException("Строка не должна быть пустой.");
+            var polishString = Convertor.ConvertToQuery(input,Operators);
             var resultStack = new Stack<double>();
 
             foreach (var el in polishString)
             {
-                if (el is Operator @operator) //оператор
+                if (el is IOperator @operator) //оператор
                 {
                     var operands = new double[@operator.CountOfOperands];
-                    for (int i = @operator.CountOfOperands - 1; i >= 0; i--)
+                    try
                     {
-                        operands[i] = resultStack.Pop();
+                        for (int i = @operator.CountOfOperands - 1; i >= 0; i--)
+                        {
+                            operands[i] = resultStack.Pop();
+                        }
+                        resultStack.Push(@operator.Evaluation(operands));
                     }
-                    resultStack.Push(@operator.Evaluation(operands));
+                    catch { throw new Exception("Лишний оператор."); }
+                    
                 }
                 else //операнд
                 {
@@ -71,7 +95,7 @@ namespace ConsoleCalc.work
         {
             try
             {
-                return Convertor.ConvertToArray(input);
+                return Convertor.ConvertToArray(input,Operators);
             }
             catch (Exception)
             {

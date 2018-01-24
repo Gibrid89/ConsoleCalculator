@@ -39,20 +39,19 @@ namespace ConsoleCalc.work
         /// <returns>Результат вычислений</returns>
         public double Calculate(string input)
         {
-            var polishString = Convertor.ConvertToStack(input);
+            var polishString = Convertor.ConvertToQuery(input);
             var resultStack = new Stack<double>();
 
             foreach (var el in polishString)
             {
-                var @operator = el as Operator;
-                if ( @operator != null) //оператор
+                if (el is Operator @operator) //оператор
                 {
                     var operands = new double[@operator.CountOfOperands];
                     for (int i = @operator.CountOfOperands - 1; i >= 0; i--)
                     {
                         operands[i] = resultStack.Pop();
                     }
-                    resultStack.Push (@operator.Evaluation(operands));
+                    resultStack.Push(@operator.Evaluation(operands));
                 }
                 else //операнд
                 {

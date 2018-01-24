@@ -19,18 +19,11 @@ namespace ConsoleCalc.work
         string[] ConvertToArray(string input);
 
         /// <summary>
-        /// Конвертирует в список.
-        /// </summary>
-        /// <param name="input">Конвертируемая строка.</param>
-        /// <returns>Список объектов, где объект или IOperator или строка.</returns>
-        List<object> ConvertToList(string input);
-
-        /// <summary>
         /// Конвертирует в стек.
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
         /// <returns>Стек объектов, где объект или IOperator или строка.</returns>
-        Stack<object> ConvertToStack(string input);
+        Queue<object> ConvertToQuery(string input);
     }
 
     
@@ -54,16 +47,15 @@ namespace ConsoleCalc.work
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
         /// <returns>Массив, где каждый элемент строка из числа или оператора.</returns>
-        /// <remarks>Вызывает ConvertToList(), и конвертирует список в массив.</remarks>
+        /// <remarks>Вызывает ConvertToQuery(), и конвертирует очередь в массив.</remarks>
         public string[] ConvertToArray(string input) 
         {
             var result = new List<string>();
             try
             {
-                foreach (var el in ConvertToList(input))
+                foreach (var el in ConvertToQuery(input))
                 {
-                    var tmp = (el as Operator);
-                    if (tmp != null)
+                    if (el is Operator tmp)
                         result.Add(tmp.Symbol.ToString());
                     else
                         result.Add(el as string);
@@ -73,53 +65,26 @@ namespace ConsoleCalc.work
             {
                 throw;
             }
-
             return result.ToArray();
         }
 
         /// <summary>
-        /// Конвертирует в стек.
+        /// Конвертирует в очередь.
         /// </summary>
         /// <param name="input">Конвертируемая строка.</param>
-        /// <returns>Стек объектов, где объект или IOperator или строка.</returns>
-        /// <remarks>Вызывает ConvertToList(), и конвертирует список в стек.</remarks>
-        public Stack<object> ConvertToStack(string input)
+        /// <returns>Очередь объектов, где объект или IOperator или строка.</returns>
+        public Queue<object> ConvertToQuery(string input)
         {
-            var result = new Stack<object>();
-            try
-            {
-                var tmp = ConvertToList(input);
-                for (int i = tmp.Count - 1; i >= 0; i--)//Инвертируем порядок
-                {
-                    result.Push(tmp[i]);
-                }
-               
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Конвертирует в список.
-        /// </summary>
-        /// <param name="input">Конвертируемая строка.</param>
-        /// <returns>Список объектов, где объект или IOperator или строка.</returns>
-        public List<object> ConvertToList(string input)
-        {
-            if (!checkParentheses(input))
+            if (!CheckParentheses(input))
             {
                 throw new FormatException("Неверно расствленны скобки.");
             }
-            var resultStack = new List<object>();
-            var bufStack = new Stack<IOperator>();
+            var resultQuery = new Queue<object>();
+            var bufStack = new Stack<IOperator>();        
 
             for (int i = 0; i < input.Length; i++)
             {
-                var opr = FindOperator(input[i], Operators);//найденный оператор
+                var opr = FindOperator(input[i]);//найденный оператор
                 if (opr != null) //Если оператор
                 {
                     if ((bufStack.Count <= 0) || (opr.Symbol == '('))
@@ -134,7 +99,7 @@ namespace ConsoleCalc.work
                         {
                             while (bufStack.Peek().Symbol != '(')
                             {
-                                resultStack.Add(bufStack.Pop());
+                                resultQuery.Enqueue(bufStack.Pop());
                             }
                             bufStack.Pop();
                         }
@@ -153,12 +118,10 @@ namespace ConsoleCalc.work
                     {
                         while (bufStack.Count > 0 && opr.Priority <= bufStack.Peek().Priority)
                         {
-                            resultStack.Add(bufStack.Pop());
+                            resultQuery.Enqueue(bufStack.Pop());
                         }
                         bufStack.Push(opr);
-                    }
-
-                    
+                    }                  
                 }
                 else if (Char.IsDigit(input[i]))//если цифра, то добавляем в строку, пока не вышли за границы и след. символ часть числа
                 {
@@ -169,7 +132,7 @@ namespace ConsoleCalc.work
                         if (input[i] == '.') s += ','; //заменяем точку запятой
                         else s += input[i];                       
                     }
-                    resultStack.Add(s);
+                    resultQuery.Enqueue(s);
                 }
                 else
                 {
@@ -181,10 +144,10 @@ namespace ConsoleCalc.work
             {
                 foreach (var el in bufStack)
                 {
-                    resultStack.Add(el);
+                    resultQuery.Enqueue(el);
                 }
             }
-            return resultStack;
+            return resultQuery;
         }
 
         /// <summary>
@@ -192,7 +155,7 @@ namespace ConsoleCalc.work
         /// </summary>
         /// <param name="input">Проверяемая строка.</param>
         /// <returns>Истина, если количество правых и левых скобок равно.</returns>
-        private bool checkParentheses (string input)
+        private bool CheckParentheses (string input)
         {
             var left = 0;
             var right = 0;
@@ -211,9 +174,9 @@ namespace ConsoleCalc.work
         /// <param name="c">Искомый символ оператора.</param>
         /// <param name="operators">Список операторов.</param>
         /// <returns></returns>
-        private IOperator FindOperator(char c, List<IOperator> operators)
+        private IOperator FindOperator(char c)
         {
-            foreach (var el in operators)
+            foreach (var el in Operators)
             {
                 if (el.Symbol == c) return el;
             }
